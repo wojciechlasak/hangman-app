@@ -81,6 +81,17 @@ export default class App extends React.Component {
     });
 
   };
+
+  restart = () => {
+    this.setState({
+      shouldDisplayGame: false,
+      pass: '', 
+      passHash: '',
+      win: false,
+      end: false,
+      amount: 0,
+    });
+  }
   
     //after press the letter, change the passhash
    handleChangedPass = (index) => {
@@ -126,8 +137,12 @@ export default class App extends React.Component {
       </Text>
       {this.state.end ? 
       this.state.win ?
-      <Text style={styles.gameEnd}>Wygrana!</Text>
-      : <Text style={styles.gameEnd}>Przegrana!</Text>
+      <TouchableOpacity style={styles.inputButton} onPress={this.restart}>
+        <Text style={styles.buttonText}> <Text style={styles.gameEnd}>Wygrana!</Text></Text>
+      </TouchableOpacity>
+      : <TouchableOpacity style={styles.inputButton} onPress={this.restart}>
+      <Text style={styles.buttonText}> <Text style={styles.gameEnd}>Przegrana!</Text></Text>
+    </TouchableOpacity>
        : <View style={styles.letterContainer}>
        {this.createTable()}
        </View>}
