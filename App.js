@@ -7,33 +7,35 @@ import {
   View,
 } from 'react-native';
 
+//
 class Letter extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      correct: false,
-      active: false,
-      disabled:false,
+      correct: false, //correct letter or not
+      pressed: false, //if the button was pressed
+      disabled:false, //disable the button
     };
   }
   
-  onChangedPass = (props => {this.props.onChangedPass(this.props.id)});
+  onChangedPass = (props => {this.props.onChangedPass(this.props.id)}); //send id to parent
 
   letterClick = () => {
+    //after press
     this.setState({ 
-      active: true,
+      pressed: true,
       disabled: true,
     });
 
-    var hit = false;
+    var hit = false; //check letters in pass
     for (let i = 0; i < this.props.pass.length; i++)
       if (this.props.pass.charAt(i) === String.fromCharCode(this.props.id + 65))
         hit = true;
 
-    if (hit) {
+    if (hit) { // was in pass
       this.setState({ correct: true });
       this.props.onChangedPass(this.props.id)
-    } else {
+    } else { //not
       this.setState({ correct: false });
       this.props.onChangedPass(-1);
     }
@@ -41,7 +43,7 @@ class Letter extends React.Component {
   render() {
     return (
       <TouchableOpacity
-       style={this.state.active ? this.state.correct ?  styles.letterButtonGreen   :   styles.letterButtonRed : styles.letterButton } 
+       style={this.state.pressed ? this.state.correct ?  styles.letterButtonGreen   :   styles.letterButtonRed : styles.letterButton } 
       onPress={this.letterClick }
       disabled={this.state.disabled}
       >
@@ -55,16 +57,17 @@ class Letter extends React.Component {
 
 export default class App extends React.Component {
   state = {
-    shouldDisplayGame: false,
-    pass: '',
+    shouldDisplayGame: false, //before enter the password
+    pass: '', 
     passHash: '',
-    amount: 0,
-    end: false,
-    win: false,
+    amount: 0, //amount of miss
+    end: false, // is game end
+    win: false, //win or lose game
   };
 
-  onChangeText = pass => this.setState({ pass });
+  onChangeText = pass => this.setState({ pass }); //get password after enter in input
 
+  //after add password
   onPassAdd = () => {
     let temp = '';
     for (let i = 0; i < this.state.pass.length; i++) {
@@ -79,14 +82,15 @@ export default class App extends React.Component {
 
   };
   
+    //after press the letter, change the passhash
    handleChangedPass = (index) => {
     let temp = this.state.passHash;
 		for(let i=0; i<this.state.pass.length; i++)
 			if (this.state.pass.charAt(i) === String.fromCharCode(index+65) ){
 				temp = temp.substr(0, i) + String.fromCharCode(index+65) + temp.substr(i+1);
       }
-    
-      console.log(index);
+  
+    //change amount of miss
     if(index===-1){
       const change = this.state.amount+1;
 	  	this.setState({amount: change});
@@ -95,7 +99,9 @@ export default class App extends React.Component {
       }
     }  
     
-		this.setState({passHash: temp});
+    this.setState({passHash: temp});
+    
+    //check if win
 		if(this.state.pass===temp){
 			this.setState({
 				win: true,
@@ -104,6 +110,8 @@ export default class App extends React.Component {
     }
 	}
 
+
+  //create 26 button with letters
   createTable = () => {
     let table = [];
     for (let i = 0; i < 26; i++)
